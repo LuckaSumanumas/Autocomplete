@@ -23,32 +23,17 @@ public class DictionaryHelper {
 		
 		
 		for(String enteredString : enteredStrings) {
-			
 			char[] enteredChars = enteredString.toCharArray();
 			List<Integer> enterDigits = retrieveEnteredDigits(enteredChars);
 			isAllDigitsEquals(enterDigits);
 			List<Character> foundChars = retrieveFoundChars(keyboardMap, enterDigits);
-			
 			Character wordCharacter = retrieveWordChar(enterDigits, foundChars);
-			
 			wordChars.add(wordCharacter);
-			
 		}
 		
-		List<String> selectedWords = dictionary.stream()
-				  .collect(Collectors.toList());;
+		words = selectWords(dictionary, wordChars);
 		
-		for(int i=0; i<wordChars.size(); i++) {
-			
-			for(String dictionaryItem : dictionary) {
-				if(!Character.valueOf(dictionaryItem.charAt(i)).equals(wordChars.get(i))) {
-					selectedWords.remove(dictionaryItem);
-				}
-			}
-		}
-			
-		
-		return selectedWords;
+		return words;
 	}
 	
 	
@@ -104,4 +89,23 @@ public class DictionaryHelper {
 		}
 		
 	}
+	
+	private static List<String> selectWords(
+			List<String> dictionary, 
+			List<Character> wordChars) {
+		List<String> selectedWords = dictionary.stream()
+				  .collect(Collectors.toList());;
+		
+		for(int i=0; i<wordChars.size(); i++) {
+			
+			for(String dictionaryItem : dictionary) {
+				if(!Character.valueOf(dictionaryItem.charAt(i)).equals(wordChars.get(i))) {
+					selectedWords.remove(dictionaryItem);
+				}
+			}
+		}
+
+		return selectedWords;
+	}
+	
 }
