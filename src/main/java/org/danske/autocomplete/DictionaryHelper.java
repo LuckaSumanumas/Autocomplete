@@ -33,7 +33,7 @@ public class DictionaryHelper {
 		
 		words = selectWords(dictionary, wordChars);
 		
-		return words;
+		return words.size() > 0 ? words : enteredStrings;
 	}
 	
 	
