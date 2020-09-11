@@ -17,42 +17,91 @@ public class DictionaryHelper {
 			List<String> dictionary,
 			List<String> enteredStrings) throws Exception {
 		
+		List<Character> wordChars = new ArrayList<>();
+		
 		List<String> words = new ArrayList<>();
 		
-		//enteredChars.stream().filter(predicate)
 		
 		for(String enteredString : enteredStrings) {
 			
 			char[] enteredChars = enteredString.toCharArray();
-			List<Integer> integers = retrieveEnteredIntegers(enteredChars);
+			List<Integer> enterDigits = retrieveEnteredDigits(enteredChars);
+			isAllDigitsEquals(enterDigits);
+			List<Character> foundChars = retrieveFoundChars(keyboardMap, enterDigits);
 			
-			List<Character> foundMap = keyboardMap.entrySet().stream()
-					.filter(entry -> entry.getKey().equals(integers.get(0)))
-			        .map(entry -> entry.getValue())
-			        .flatMap(List::stream) 
-			        .collect(Collectors.toList());
+			Character wordCharacter = retrieveWordChar(enterDigits, foundChars);
 			
-			System.out.println("Entered chars: " + foundMap.toString());
+			wordChars.add(wordCharacter);
+			
 		}
 		
+		List<String> selectedWords = dictionary.stream()
+				  .collect(Collectors.toList());;
 		
-		return words;
+		for(int i=0; i<wordChars.size(); i++) {
+			
+			for(String dictionaryItem : dictionary) {
+				if(!Character.valueOf(dictionaryItem.charAt(i)).equals(wordChars.get(i))) {
+					selectedWords.remove(dictionaryItem);
+				}
+			}
+		}
+			
+		
+		return selectedWords;
 	}
 	
 	
-	private static List<Integer> retrieveEnteredIntegers(char[] enteredChars) throws Exception {
-		List<Integer> integers = new ArrayList<>();
+	private static Character retrieveWordChar(
+			List<Integer> enteredDigits, 
+			List<Character> foundChars) throws Exception {
+		
+		if(foundChars.size()<enteredDigits.size()) 
+			throw new Exception("The number of digits entered in " 
+					+ enteredDigits.toString() + " exceeds number of character available in " 
+					+ foundChars.toString());
+		
+		return foundChars.get(enteredDigits.size()-1);
+	}
+
+
+	private static List<Integer> retrieveEnteredDigits(char[] enteredChars) throws Exception {
+		List<Integer> digits = new ArrayList<>();
 		
 		for(char enteredChar : enteredChars) {
 			if (Character.isDigit(enteredChar)) {
 				Integer enteredInt = Character.getNumericValue(enteredChar);
-				integers.add(enteredInt);
+				digits.add(enteredInt);
 			} else {
 				throw new Exception("Entered character '" + enteredChar + "' is not digit");
 			}
 			
 		}
 		
-		return integers;
+		return digits;
+	}
+	
+	
+	private static List<Character> retrieveFoundChars(
+			HashMap<Integer, List<Character>> keyboardMap,
+			List<Integer> enterDigits
+			) {
+		List<Character> foundChars = keyboardMap.entrySet().stream()
+				.filter(entry -> entry.getKey().equals(enterDigits.get(0)))
+		        .map(entry -> entry.getValue())
+		        .flatMap(List::stream) 
+		        .collect(Collectors.toList());
+		
+		return foundChars;
+	}
+	
+	private static void isAllDigitsEquals(List<Integer> foundChars) throws Exception {
+		
+		for(Integer character : foundChars) {
+			if(!character.equals(foundChars.get(0))) {
+				throw new Exception("The digits are not equal in " + foundChars.toString());
+			}
+		}
+		
 	}
 }

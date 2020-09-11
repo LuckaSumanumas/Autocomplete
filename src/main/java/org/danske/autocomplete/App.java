@@ -22,7 +22,7 @@ public class App
     	KeyboardMap keyboardMap = new KeyboardMap();
     	String line;
 
-    	System.out.println(String.format("Enter digits to srach words:"));
+    	System.out.println(String.format("Enter digits to search words:"));
     	
     	try {
 			while((line = br.readLine()) != null) {
